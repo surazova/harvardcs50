@@ -64,3 +64,29 @@ int main(void)
         printf("INVALID\n");
     }
 }
+
+string checkBrand(long long ccnum)
+{
+  int length = 0;
+  for (long long i = 1; ccnum / i > 0; i *= 10)
+  {
+    length ++;
+  }
+  int firstTwo = ccnum / square(10, length - 2);
+  if (length == 15 && (firstTwo == 34 || firstTwo == 37))
+  {
+    return "AMEX\n";
+  }
+  else if (length == 16 && (firstTwo == 51 || firstTwo == 52 || firstTwo == 53 || firstTwo == 54 || firstTwo == 55))
+  {
+    return "MASTERCARD\n";
+  }
+  else if ((length == 13 || length == 16) && firstTwo / 10 == 4)
+  {
+    return "VISA\n";
+  }
+  else
+  {
+    return "INVALID\n";
+  }
+}
