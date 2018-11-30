@@ -11,24 +11,29 @@
 #define MAX13 4999999999999
 #define MIN13 4000000000000
 
+#define VISAFIRST 4
+#define MASTERCARDFIRST 5
+#define MASTERCARDSECONDMIN 1
+#define MASTERCARDSECONDMAX 5
+#define AMEXFIRST 3
+//#define AMEXSECOND secondDigit == 4 || secondDigit == 7
+
 int main(void)
 {
     long long ccnum = get_long_long("Number: ");
     int length = 0;
-    printf("%lld\n", ccnum);
+    int modifier = 0;
     if (ccnum >= MIN16 && ccnum <= MAX16)
-    {
-        printf("card may be Visa or Mastercard\n");
+    {  //Add modifier for even, 16 digit number
         length = 16;
+        modifier = 1;
     }
     else if (ccnum >= MIN15 && ccnum <= MAX15)
     {
-        printf("card may be an AMEX\n");
         length = 15;
     }
     else if (ccnum >= MIN13 && ccnum <= MAX13)
     {
-        printf("card may be a Visa\n");
         length = 13;
     }
     else
@@ -38,11 +43,22 @@ int main(void)
     }
     int timesTwo = 0;
     int noTimes = 0;
+    int firstDigit = 0;
+    int secondDigit = 0;
 
     for (; length > 0; length--)
     {
         int digit = ccnum % 10;
         // printf("length: %i\tDigit: %i\n", length, digit);
+        if (length == 2)
+        {
+            secondDigit = digit;
+        }
+        else if (length == 1)
+        {
+            firstDigit = digit;
+        }
+
         ccnum = ccnum / 10;
         if (length % 2 == 0) {
             int temp = digit * 2;
@@ -57,36 +73,34 @@ int main(void)
     int final = noTimes + timesTwo;
     if (final % 10 == 0)
     {
-        printf("VALID\n");
-    }
-    else
-    {
+        if (firstDigit == 4)
+        {
+            printf("VISA\n");
+        }
+        else if (firstDigit == 5 || (secondDigit >= 1 && secondDigit <= 5))
+        {
+            printf("MASTERCARD\n");
+        }
+        else if (firstDigit == 3 && (secondDigit == 4 || secondDigit == 7))
+        {
+            printf("AMEX\n");
+        }
+        else
+        {
         printf("INVALID\n");
-    }
+        }
+}
 }
 
-string checkBrand(long long ccnum)
-{
-  int length = 0;
-  for (long long i = 1; ccnum / i > 0; i *= 10)
-  {
-    length ++;
-  }
-  int firstTwo = ccnum / square(10, length - 2);
-  if (length == 15 && (firstTwo == 34 || firstTwo == 37))
-  {
-    return "AMEX\n";
-  }
-  else if (length == 16 && (firstTwo == 51 || firstTwo == 52 || firstTwo == 53 || firstTwo == 54 || firstTwo == 55))
-  {
-    return "MASTERCARD\n";
-  }
-  else if ((length == 13 || length == 16) && firstTwo / 10 == 4)
-  {
-    return "VISA\n";
-  }
-  else
-  {
-    return "INVALID\n";
-  }
-}
+//Mastercard: 5555555555554444
+//Amex: 378282246310005
+
+//Another solution
+// else if (firstDigit == AMEXFIRST && AMEXSECOND)
+//         {
+//             printf("AMEX\n");
+//         }
+// else if(fistDigit == MASETERCARDFIRSˇ)
+//  {
+//      if(secondDigit >= MASTERCARDSECONDMIN && secondDigit)
+//  }
